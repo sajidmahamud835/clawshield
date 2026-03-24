@@ -10,7 +10,7 @@ export async function createServer() {
   await app.register(multipart, {
     limits: {
       fileSize: 25 * 1024 * 1024, // 25MB max file size matching typical Whisper limits
-    }
+    },
   });
 
   app.post('/transcribe', async (request, reply) => {
@@ -26,16 +26,15 @@ export async function createServer() {
       // 1. STT: Whisper
       app.log.info(`Processing STT for ${filename} (${buffer.length} bytes)`);
       const transcript = await transcribeAudio(buffer, filename);
-      
+
       // 2. NLU: Intent Extraction
       app.log.info(`Extracting intent for transcript length: ${transcript.length}`);
       const intent = await extractIntent(transcript);
 
       return {
         transcript,
-        intent
+        intent,
       };
-
     } catch (error: any) {
       app.log.error(error);
       return reply.status(500).send({ error: error.message || 'STT/Intent pipeline failed' });

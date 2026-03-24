@@ -40,20 +40,24 @@ clawshield/
 ## Development Setup
 
 ### Prerequisites
+
 1. **Node.js 20+**
 2. **pnpm 9+**
 3. **Docker Desktop** (Windows/Mac) or Docker CE (Linux)
-4. Active API Keys for Anthropic and OpenAI (if not using local whisper). 
+4. Active API Keys for Anthropic and OpenAI (if not using local whisper).
 
 ### Installation
 
 1. Copy the environment configuration:
+
    ```bash
    cp .env.local.example .env.local
    ```
-   *Fill out the `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` manually inside `.env.local`.*
+
+   _Fill out the `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` manually inside `.env.local`._
 
 2. Install dependencies globally across the workspace:
+
    ```bash
    npm install
    ```

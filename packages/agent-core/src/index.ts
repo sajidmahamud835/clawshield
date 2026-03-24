@@ -15,7 +15,7 @@ async function main() {
 
   // 1. Generate JWT for the mobile dashboard to consume
   const jwt = await generateDeviceJwt();
-  
+
   // Print highly-structured output so the CLI/Installer can capture this token and render a QR code.
   console.log('\n==================================================');
   console.log(' DEVICE JWT (Encode this in the installer QR code) ');
@@ -25,7 +25,10 @@ async function main() {
   // 2. Initialize Watchdog
   // Dummy command for phase 1 since real OpenClaw isn't installed
   const dummyScriptPath = path.resolve(process.cwd(), 'dummy-agent.js');
-  const watchdog = new Watchdog(process.execPath, ['-e', 'console.log("Dummy agent running"); setInterval(() => {}, 1000)']);
+  const watchdog = new Watchdog(process.execPath, [
+    '-e',
+    'console.log("Dummy agent running"); setInterval(() => { console.log(JSON.stringify({ type: "heartbeat", payload: { uptime: process.uptime() } })) }, 5000)',
+  ]);
 
   // 3. Initialize WebSocket Server
   const wss = new AgentWebSocketServer(4000, watchdog);
@@ -37,7 +40,7 @@ async function main() {
     watchdog.stop();
     process.exit(0);
   });
-  
+
   process.on('SIGTERM', () => {
     console.log('\nShutting down gracefully...');
     wss.stop();

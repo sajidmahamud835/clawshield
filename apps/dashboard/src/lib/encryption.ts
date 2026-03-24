@@ -9,7 +9,7 @@ async function deriveKey(jwt: string): Promise<CryptoKey> {
     enc.encode(jwt),
     { name: 'PBKDF2' },
     false,
-    ['deriveBits', 'deriveKey']
+    ['deriveBits', 'deriveKey'],
   );
 
   return crypto.subtle.deriveKey(
@@ -22,7 +22,7 @@ async function deriveKey(jwt: string): Promise<CryptoKey> {
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['encrypt', 'decrypt']
+    ['encrypt', 'decrypt'],
   );
 }
 
@@ -33,12 +33,8 @@ export async function encryptData(plaintext: string, jwt: string): Promise<strin
   const enc = new TextEncoder();
   const key = await deriveKey(jwt);
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  
-  const cipher = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    enc.encode(plaintext)
-  );
+
+  const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plaintext));
 
   const out = new Uint8Array(iv.length + cipher.byteLength);
   out.set(iv, 0);
@@ -53,15 +49,11 @@ export async function encryptData(plaintext: string, jwt: string): Promise<strin
 export async function decryptData(cipherTextBase64: string, jwt: string): Promise<string> {
   const key = await deriveKey(jwt);
   const data = Buffer.from(cipherTextBase64, 'base64');
-  
+
   const iv = data.slice(0, 12);
   const cipher = data.slice(12);
 
-  const plainBuffer = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    cipher
-  );
+  const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipher);
 
   return new TextDecoder().decode(plainBuffer);
 }

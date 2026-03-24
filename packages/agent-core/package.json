@@ -20,14 +20,16 @@
   },
   "dependencies": {
     "@clawshield/shared-types": "*",
-    "ws": "^8.16.0",
+    "@prisma/client": "^6.19.2",
     "jsonwebtoken": "^9.0.2",
-    "zod": "^3.22.4",
-    "machine-uuid": "^1.1.0"
+    "machine-uuid": "^1.1.0",
+    "prisma": "^6.19.2",
+    "ws": "^8.16.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "typescript": "*",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/ws": "^8.5.10",
-    "@types/jsonwebtoken": "^9.0.5"
+    "typescript": "*"
   }
 }

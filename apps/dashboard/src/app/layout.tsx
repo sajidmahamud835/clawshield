@@ -14,9 +14,7 @@ export default function RootLayout({
   // Hardcoded dark theme class to enforce the premium aesthetic
   return (
     <html lang="en" className="dark">
-      <body className="antialiased min-h-screen">
-        {children}
-      </body>
+      <body className="antialiased min-h-screen">{children}</body>
     </html>
   );
 }

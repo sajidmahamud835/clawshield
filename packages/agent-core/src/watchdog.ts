@@ -9,7 +9,10 @@ export class Watchdog extends EventEmitter {
   private firstCrashTime = 0;
   private isIntentionalExit = false;
 
-  constructor(private command: string, private args: string[] = []) {
+  constructor(
+    private command: string,
+    private args: string[] = [],
+  ) {
     super();
   }
 
@@ -28,7 +31,7 @@ export class Watchdog extends EventEmitter {
 
   private spawnChild(): void {
     console.log(`[Watchdog] Spawning agent process: ${this.command} ${this.args.join(' ')}`);
-    
+
     this.child = spawn(this.command, this.args, {
       stdio: 'pipe',
       env: process.env,
@@ -48,7 +51,7 @@ export class Watchdog extends EventEmitter {
     this.child.on('exit', (code, signal) => {
       console.log(`[Watchdog] Agent exited with code ${code} and signal ${signal}`);
       this.child = null;
-      
+
       if (!this.isIntentionalExit) {
         this.handleCrash();
       }
@@ -57,7 +60,7 @@ export class Watchdog extends EventEmitter {
 
   private handleCrash(): void {
     const now = Date.now();
-    
+
     // Reset window if it's been a while since the first crash
     if (now - this.firstCrashTime > this.restartWindowMs) {
       this.restartCount = 0;
@@ -67,12 +70,16 @@ export class Watchdog extends EventEmitter {
     this.restartCount++;
 
     if (this.restartCount > this.maxRestarts) {
-      console.error(`[Watchdog] FATAL: Agent crashed ${this.restartCount} times within limit. Giving up.`);
+      console.error(
+        `[Watchdog] FATAL: Agent crashed ${this.restartCount} times within limit. Giving up.`,
+      );
       this.emit('fatal');
       return;
     }
 
-    console.log(`[Watchdog] Restarting agent (attempt ${this.restartCount}/${this.maxRestarts})...`);
+    console.log(
+      `[Watchdog] Restarting agent (attempt ${this.restartCount}/${this.maxRestarts})...`,
+    );
     setTimeout(() => this.spawnChild(), 1000); // 1 second backoff
   }
 
