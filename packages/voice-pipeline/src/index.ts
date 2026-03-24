@@ -8,7 +8,7 @@ import { createServer } from './server.js';
 
 async function main() {
   console.log('🚀 Starting Voice Pipeline...');
-  
+
   const server = await createServer();
   const port = Number(process.env.VOICE_PORT) || 4001;
 

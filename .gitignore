@@ -42,3 +42,8 @@ coverage/
 # Temp
 *.tmp
 *.temp
+node_modules/
+.next/
+dist/
+*.log
+target/

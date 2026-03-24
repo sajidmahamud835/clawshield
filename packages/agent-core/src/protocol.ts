@@ -13,11 +13,11 @@ export const AgentMessageSchema = z.object({
     'skill:invoke',
     'skill:result',
     'voice:transcript',
-    'voice:audio'
+    'voice:audio',
   ]) as z.ZodType<AgentMessageType>,
   payload: z.record(z.string(), z.unknown()),
   sessionId: z.string(),
-  timestamp: z.string().datetime()
+  timestamp: z.string().datetime(),
 });
 
 /**

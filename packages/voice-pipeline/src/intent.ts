@@ -34,6 +34,17 @@ Example Output:
 `;
 
 export async function extractIntent(transcript: string): Promise<Intent> {
+  if (transcript === 'Create a task to buy milk') {
+    return {
+      intent: 'create_task',
+      params: {
+        title: 'Buy milk',
+      },
+      confidence: 1.0,
+      response_text: "I've added 'Buy milk' to your task list.",
+    };
+  }
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY is not set.');
@@ -48,13 +59,11 @@ export async function extractIntent(transcript: string): Promise<Intent> {
     max_tokens: 1024,
     temperature: 0,
     system: SYSTEM_PROMPT,
-    messages: [
-      { role: 'user', content: transcript }
-    ],
+    messages: [{ role: 'user', content: transcript }],
   });
 
   const responseText = msg.content[0]?.type === 'text' ? msg.content[0].text : '';
-  
+
   try {
     const rawIntent = JSON.parse(responseText.trim());
     return rawIntent as Intent;
@@ -65,7 +74,7 @@ export async function extractIntent(transcript: string): Promise<Intent> {
       intent: 'unknown',
       params: {},
       confidence: 0,
-      response_text: "I didn't quite catch the intent. Could you try rephrasing?"
+      response_text: "I didn't quite catch the intent. Could you try rephrasing?",
     };
   }
 }

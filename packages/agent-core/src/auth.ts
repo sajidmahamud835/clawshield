@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 export async function getMachineId(): Promise<string> {
   const interfaces = os.networkInterfaces();
   let mac = '00:00:00:00:00:00';
-  
+
   for (const name of Object.keys(interfaces)) {
     const iface = interfaces[name]?.find((i) => !i.internal && i.mac !== '00:00:00:00:00:00');
     if (iface) {
@@ -26,12 +26,8 @@ export async function getMachineId(): Promise<string> {
 export async function generateDeviceJwt(): Promise<string> {
   const machineId = await getMachineId();
   const secret = process.env.CLAWSHIELD_AGENT_SECRET || 'development_fallback_secret';
-  
-  return jwt.sign(
-    { sub: machineId, role: 'owner' },
-    secret,
-    { expiresIn: '30d' }
-  );
+
+  return jwt.sign({ sub: machineId, role: 'owner' }, secret, { expiresIn: '30d' });
 }
 
 /**
@@ -41,7 +37,7 @@ export async function verifyToken(token: string): Promise<boolean> {
   try {
     const secret = process.env.CLAWSHIELD_AGENT_SECRET || 'development_fallback_secret';
     const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
-    
+
     const currentMachineId = await getMachineId();
     return decoded.sub === currentMachineId;
   } catch (error) {

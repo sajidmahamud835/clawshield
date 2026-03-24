@@ -12,7 +12,7 @@ services:
       - clawshield-internal
     restart: on-failure:3
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:4000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -24,7 +24,7 @@ services:
       dockerfile: ./docker/gateway/Dockerfile
     container_name: clawshield-gateway
     ports:
-      - "4000:4000"
+      - '4000:4000'
     env_file:
       - ../.env.local
     networks:
@@ -34,7 +34,7 @@ services:
       agent:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:4000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -44,7 +44,7 @@ services:
     container_name: clawshield-dashboard
     working_dir: /app/apps/dashboard
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - ..:/app
     command: sh -c "echo 'Next.js dev server starting...' && npm run dev"
@@ -54,7 +54,7 @@ services:
       - clawshield-internal
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:3000']
       interval: 30s
       timeout: 10s
       retries: 5
