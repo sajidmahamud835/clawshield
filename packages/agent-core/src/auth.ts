@@ -1,30 +1,44 @@
 import * as os from 'node:os';
 import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import jwt from 'jsonwebtoken';
 
-// Using a fallback hardware ID approach for the prototype
-// In production, we'd use a native package like machine-uuid
-export async function getMachineId(): Promise<string> {
-  const interfaces = os.networkInterfaces();
-  let mac = '00:00:00:00:00:00';
+const CLAWID_PATH = path.join(process.cwd(), 'data', '.clawid');
 
-  for (const name of Object.keys(interfaces)) {
-    const iface = interfaces[name]?.find((i) => !i.internal && i.mac !== '00:00:00:00:00:00');
-    if (iface) {
-      mac = iface.mac;
-      break;
-    }
+// Get machine specific hardware ID
+export async function getMachineId(): Promise<string> {
+  const model = os.cpus()[0]?.model || 'unknown-model';
+  const hostname = os.hostname();
+
+  // Hash model + hostname to create a hardware-bound ID
+  const rawId = `${model}-${hostname}`;
+  return crypto.createHash('sha256').update(rawId).digest('hex');
+}
+
+/**
+ * Ensures the device hardware ID is stored in data/.clawid
+ */
+export async function ensureClawId(): Promise<string> {
+  const machineId = await getMachineId();
+  const dir = path.dirname(CLAWID_PATH);
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 
-  // Hash the MAC address with hostname to create a stable hardware-bound ID
-  return crypto.createHash('sha256').update(`${mac}-${os.hostname()}`).digest('hex');
+  if (!fs.existsSync(CLAWID_PATH)) {
+    fs.writeFileSync(CLAWID_PATH, machineId, 'utf8');
+  }
+
+  return fs.readFileSync(CLAWID_PATH, 'utf8');
 }
 
 /**
  * Generates a 30-day JWT bound to the machine's hardware ID.
  */
 export async function generateDeviceJwt(): Promise<string> {
-  const machineId = await getMachineId();
+  const machineId = await ensureClawId();
   const secret = process.env.CLAWSHIELD_AGENT_SECRET || 'development_fallback_secret';
 
   return jwt.sign({ sub: machineId, role: 'owner' }, secret, { expiresIn: '30d' });
@@ -38,7 +52,7 @@ export async function verifyToken(token: string): Promise<boolean> {
     const secret = process.env.CLAWSHIELD_AGENT_SECRET || 'development_fallback_secret';
     const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
 
-    const currentMachineId = await getMachineId();
+    const currentMachineId = await ensureClawId();
     return decoded.sub === currentMachineId;
   } catch (error) {
     return false;

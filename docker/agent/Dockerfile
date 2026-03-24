@@ -4,18 +4,18 @@ FROM node:20-alpine
 # Install minimal OS dependencies including curl for health checks
 RUN apk add --no-cache curl
 
-# Create non-root user 'claw' for security
-RUN addgroup -S claw && adduser -S claw -G claw
+# Create non-root user 'clawuser' for security
+RUN addgroup -S claw && adduser -S clawuser -G claw
 
 # Set up application directory and memory mount permissions
 WORKDIR /app
-RUN mkdir -p /app/memory && chown -R claw:claw /app
+RUN mkdir -p /app/memory && chown -R clawuser:claw /app
 
 # Switch to non-root user
-USER claw
+USER clawuser
 
 # In a full build, we'd copy package.json and install deps here
-# COPY --chown=claw:claw package.json pnpm-lock.yaml* ./
+# COPY --chown=clawuser:claw package.json pnpm-lock.yaml* ./
 # RUN corepack enable pnpm && pnpm install
 
 # Health check (matches docker-compose.yml)

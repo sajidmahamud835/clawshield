@@ -1,38 +1,33 @@
-# ClawShield Windows Installer
-# Purpose: Zero-terminal setup for non-technical users.
+# ClawShield Windows Installer (PowerShell)
 
-Write-Host "🚀 Starting ClawShield Setup..." -ForegroundColor Cyan
+echo "🚀 Starting ClawShield Setup..."
 
-# 1. Environment Checks
-function Check-Command($cmd) {
-    if (Get-Command $cmd -ErrorAction SilentlyContinue) {
-        return $true
-    }
-    return $false
+# 1. Checks: Docker Desktop via winget
+if (-not (Get-Command "docker" -ErrorAction SilentlyContinue)) {
+    echo "📦 Installing Docker Desktop via winget..."
+    winget install Docker.DockerDesktop
+    echo "Please restart your shell after installation completes."
+    exit
 }
 
-if (-not (Check-Command "node")) {
-    Write-Host "❌ Error: Node.js is not installed. Please install Node.js 20+ first." -ForegroundColor Red
-    exit 1
+# 2. Checks: WSL2
+wsl --status
+if ($LASTEXITCODE -ne 0) {
+    echo "⚠️ WSL2 is required for Docker. Please enable it in Windows Features."
 }
-
-if (-not (Check-Command "docker")) {
-    Write-Host "⚠️ Warning: Docker is not detected. Background agent logic will require Docker for full capability." -ForegroundColor Yellow
-}
-
-# 2. Workspace Initialization
-Write-Host "📦 Installing dependencies (Monorepo)..." -ForegroundColor Gray
-npm install --legacy-peer-deps
 
 # 3. Env Setup
 if (-not (Test-Path ".env.local")) {
-    Write-Host "📝 Initializing environment variables..." -ForegroundColor Gray
-    Copy-Item ".env.local.example" ".env.local"
-    # Generate a random secret for JWT
-    $secret = [Guid]::NewGuid().ToString()
-    (Get-Content ".env.local") -replace "CLAWSHIELD_AGENT_SECRET=.*", "CLAWSHIELD_AGENT_SECRET=$secret" | Set-Content ".env.local"
+    echo "📝 Initializing .env.local..."
+    copy .env.local.example .env.local
+    $secret = [Guid]::NewGuid().ToString("N")
+    (Get-Content .env.local) -replace 'CLAWSHIELD_AGENT_SECRET=.*', "CLAWSHIELD_AGENT_SECRET=$secret" | Set-Content .env.local
 }
 
-# 4. Success
-Write-Host "✅ ClawShield is ready!" -ForegroundColor Green
-Write-Host "Run '.\scripts\start.ps1' to boot your AI agent." -ForegroundColor Cyan
+# 4. Pull and Up
+echo "🐳 Booting containers..."
+docker compose pull
+docker compose up -d
+
+echo "✅ ClawShield is ready!"
+echo "Open http://localhost:3000 to complete setup."
