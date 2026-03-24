@@ -1,0 +1,10 @@
+{
+  "name": "@clawshield/cloud",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Future ClawCloud SaaS backend — scaffold only, no logic yet",
+  "scripts": {
+    "dev": "echo 'Cloud app not yet implemented. Phase 2.'",
+    "build": "echo 'Cloud app not yet implemented.'"
+  }
+}

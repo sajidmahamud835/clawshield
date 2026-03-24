@@ -1,0 +1,67 @@
+services:
+  agent:
+    build:
+      context: ..
+      dockerfile: ./docker/agent/Dockerfile
+    container_name: clawshield-agent
+    volumes:
+      - ../data/memory:/app/memory
+    env_file:
+      - ../.env.local
+    networks:
+      - clawshield-internal
+    restart: on-failure:3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: ./docker/gateway/Dockerfile
+    container_name: clawshield-gateway
+    ports:
+      - "4000:4000"
+    env_file:
+      - ../.env.local
+    networks:
+      - clawshield-internal
+    restart: unless-stopped
+    depends_on:
+      agent:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  dashboard:
+    image: node:20-alpine
+    container_name: clawshield-dashboard
+    working_dir: /app/apps/dashboard
+    ports:
+      - "3000:3000"
+    volumes:
+      - ..:/app
+    command: sh -c "echo 'Next.js dev server starting...' && npm run dev"
+    env_file:
+      - ../.env.local
+    networks:
+      - clawshield-internal
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  clawshield-internal:
+    driver: bridge
+
+volumes:
+  agent_memory:

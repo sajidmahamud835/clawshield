@@ -1,0 +1,11 @@
+{
+  "name": "@clawshield/dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Next.js 15 App Router — local control panel for ClawShield",
+  "scripts": {
+    "dev": "echo 'Dashboard not yet initialized. Run Step 4 first.'",
+    "build": "echo 'Dashboard not yet initialized.'",
+    "typecheck": "echo 'Dashboard not yet initialized.'"
+  }
+}

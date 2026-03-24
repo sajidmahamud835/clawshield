@@ -1,0 +1,10 @@
+{
+  "name": "@clawshield/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tauri 2.0 desktop app — installer/launcher wrapper for ClawShield",
+  "scripts": {
+    "dev": "echo 'Desktop app not yet initialized. Run Step 6 first.'",
+    "build": "echo 'Desktop app not yet initialized.'"
+  }
+}

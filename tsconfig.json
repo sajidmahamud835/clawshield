@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@clawshield/shared-types": ["packages/shared-types/src"],
+      "@clawshield/agent-core": ["packages/agent-core/src"],
+      "@clawshield/voice-pipeline": ["packages/voice-pipeline/src"],
+      "@clawshield/skill-runner": ["packages/skill-runner/src"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "**/dist", "**/node_modules"]
+}
