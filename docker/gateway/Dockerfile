@@ -17,6 +17,14 @@ USER gateway
 # Expose the WebSocket proxy port
 EXPOSE 4000
 
+# Copy only the necessary files for building the gateway package
+COPY --chown=gateway:gateway package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
+COPY --chown=gateway:gateway packages/gateway ./packages/gateway
+COPY --chown=gateway:gateway packages/shared-types ./packages/shared-types
+
+# Enable pnpm and build the workspace
+# RUN corepack enable pnpm && pnpm install --filter=@clawshield/gateway && pnpm --filter=@clawshield/gateway build
+
 # Health check (matches docker-compose.yml)
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
   CMD curl -f http://localhost:4000/health || exit 1

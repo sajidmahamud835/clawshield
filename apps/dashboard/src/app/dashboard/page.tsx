@@ -1,7 +1,7 @@
 'use client';
 
 import { useAgentSocket } from '@/lib/agent-socket';
-import { Activity, Mic, Settings, Blocks } from 'lucide-react';
+import { Activity, Mic, Settings, Blocks, CheckCircle2, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Dashboard() {
@@ -73,27 +73,58 @@ export default function Dashboard() {
         <main className="flex-1 p-6 overflow-hidden flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold tracking-tight">Agent reasoning trace</h1>
+            <button className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-all">
+              <Mic className="h-4 w-4" /> Hold for Quick Voice
+            </button>
           </div>
 
-          <div className="flex-1 rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden flex flex-col">
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm">
-              {messages.length === 0 ? (
-                <div className="text-muted-foreground text-center mt-20">
-                  Waiting for agent activity...
-                </div>
-              ) : (
-                messages.map((msg, idx) => (
-                  <div key={idx} className="flex flex-col border-b border-border/50 pb-2">
-                    <span className="text-xs text-muted-foreground">
-                      {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : 'N/A'} [
-                      {msg.type}]
-                    </span>
-                    <pre className="mt-1 whitespace-pre-wrap leading-relaxed">
-                      {JSON.stringify(msg.payload, null, 2)}
-                    </pre>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 overflow-hidden">
+            <div className="lg:col-span-2 rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden flex flex-col">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm">
+                {messages.length === 0 ? (
+                  <div className="text-muted-foreground text-center mt-20">
+                    Waiting for agent activity...
                   </div>
-                ))
-              )}
+                ) : (
+                  messages.map((msg, idx) => (
+                    <div key={idx} className="flex flex-col border-b border-border/50 pb-2">
+                      <span className="text-xs text-muted-foreground">
+                        {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : 'N/A'} [
+                        {msg.type}]
+                      </span>
+                      <pre className="mt-1 whitespace-pre-wrap leading-relaxed">
+                        {JSON.stringify(msg.payload, null, 2)}
+                      </pre>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Tasks Panel */}
+            <div className="rounded-xl border bg-card p-4 flex flex-col gap-4 shadow-sm">
+              <h2 className="font-semibold flex items-center gap-2">
+                <Clock className="h-4 w-4 text-primary" /> Pending Tasks
+              </h2>
+              <div className="space-y-3">
+                <div className="p-3 border rounded-lg flex items-center justify-between bg-muted/20">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">Verify Voice Pipeline</span>
+                    <span className="text-[10px] text-muted-foreground">Due: Today</span>
+                  </div>
+                  <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="p-3 border rounded-lg flex items-center justify-between bg-muted/20 opacity-60">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium line-through">Docker Scaffold</span>
+                    <span className="text-[10px] text-muted-foreground">Done</span>
+                  </div>
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                </div>
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-auto">
+                Tasks are derived from agent memory and synced via WebSocket.
+              </p>
             </div>
           </div>
         </main>

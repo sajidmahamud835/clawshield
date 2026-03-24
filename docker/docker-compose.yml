@@ -5,7 +5,7 @@ services:
       dockerfile: ./docker/agent/Dockerfile
     container_name: clawshield-agent
     volumes:
-      - ../data/memory:/app/memory
+      - ../data:/app/data
     env_file:
       - ../.env.local
     networks:
@@ -29,6 +29,7 @@ services:
       - ../.env.local
     networks:
       - clawshield-internal
+      - clawshield-external
     restart: unless-stopped
     depends_on:
       agent:
@@ -51,7 +52,7 @@ services:
     env_file:
       - ../.env.local
     networks:
-      - clawshield-internal
+      - clawshield-external
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'wget', '-qO-', 'http://localhost:3000']
@@ -61,6 +62,9 @@ services:
 
 networks:
   clawshield-internal:
+    driver: bridge
+    internal: true
+  clawshield-external:
     driver: bridge
 
 volumes:
