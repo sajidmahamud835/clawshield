@@ -4,6 +4,10 @@
   "private": true,
   "description": "ClawShield — zero-terminal AI agent distribution",
   "packageManager": "pnpm@9.15.4",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "engines": {
     "node": ">=20.0.0"
   },

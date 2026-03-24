@@ -4,7 +4,15 @@
   "private": true,
   "description": "Tauri 2.0 desktop app — installer/launcher wrapper for ClawShield",
   "scripts": {
-    "dev": "echo 'Desktop app not yet initialized. Run Step 6 first.'",
-    "build": "echo 'Desktop app not yet initialized.'"
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-shell": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
   }
 }

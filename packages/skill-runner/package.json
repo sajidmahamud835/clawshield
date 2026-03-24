@@ -19,9 +19,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@clawshield/shared-types": "workspace:*"
+    "@clawshield/shared-types": "*"
   },
   "devDependencies": {
-    "typescript": "workspace:*"
+    "typescript": "*"
   }
 }
